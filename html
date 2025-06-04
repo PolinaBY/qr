@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кнопки действий с таблицей услуг</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #phoneNumber {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .quantity {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .quantity button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            font-size: 14px;
+            background-color: #ddd;
+            color: #333;
+        }
+        .quantity button:hover {
+            background-color: #ccc;
+        }
+        .quantity span {
+            min-width: 30px;
+            display: inline-block;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <button id="contactBtn">Позвонить супервайзеру</button>
+        <button id="downloadBtn">Заказать услуги</button>
+        <div id="phoneNumber"></div>
+
+        <table id="servicesTable">
+            <thead>
+                <tr>
+                    <th>Услуга</th>
+                    <th>Описание</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Веб-разработка</td>
+                    <td>Создание сайта под ключ</td>
+                    <td>50 000 ₽</td>
+                    <td class="quantity">
+                        <button class="decrement">-</button>
+                        <span class="count">0</span>
+                        <button class="increment">+</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>SEO</td>
+                    <td>Оптимизация сайта</td>
+                    <td>30 000 ₽</td>
+                    <td class="quantity">
+                        <button class="decrement">-</button>
+                        <span class="count">0</span>
+                        <button class="increment">+</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Дизайн</td>
+                    <td>Разработка UI/UX</td>
+                    <td>40 000 ₽</td>
+                    <td class="quantity">
+                        <button class="decrement">-</button>
+                        <span class="count">0</span>
+                        <button class="increment">+</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Кнопка "Связаться"
+        document.getElementById('contactBtn').addEventListener('click', function() {
+            document.getElementById('phoneNumber').textContent = 'Телефон для связи: +7 (123) 456-78-90';
+        });
+
+        // Кнопка "Выгрузить" - показывает таблицу
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            const table = document.getElementById('servicesTable');
+            table.style.display = table.style.display === 'none' ? 'table' : 'none';
+        });
+
+        // Обработчики для счетчиков количества
+        document.querySelectorAll('.increment').forEach(button => {
+            button.addEventListener('click', function() {
+                const countElement = this.parentElement.querySelector('.count');
+                let count = parseInt(countElement.textContent);
+                countElement.textContent = count + 1;
+            });
+        });
+
+        document.querySelectorAll('.decrement').forEach(button => {
+            button.addEventListener('click', function() {
+                const countElement = this.parentElement.querySelector('.count');
+                let count = parseInt(countElement.textContent);
+                if (count > 0) {
+                    countElement.textContent = count - 1;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
