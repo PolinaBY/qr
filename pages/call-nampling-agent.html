@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call a Nanpling Agent</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../file.html" class="back-btn">← Back to main</a>
+        <div class="logo">
+            <img src="../изображение/logo.png" alt="Logo">
+        </div>
+        <h1>CALL A NANPLING AGENT</h1>
+    </header>
+
+    <div class="phone-container">
+        <h2>Contact our agent</h2>
+        <div class="phone-number" id="phoneNumber">+1 (234) 567-8900</div>
+        
+        <div class="copy-message" id="copyMessage">Phone number copied!</div>
+        
+        <div>
+            <a href="tel:+12345678900" class="call-btn">Call Now</a>
+            <button class="copy-btn" id="copyBtn">Copy Number</button>
+        </div>
+        
+        <p style="margin-top: 30px; color: #666;">
+            Our agents are available 24/7 to assist you with any inquiries or requests.
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('copyBtn').addEventListener('click', function() {
+            const phoneNumber = document.getElementById('phoneNumber').textContent;
+            
+            // Create temporary input element to copy text
+            const tempInput = document.createElement('input');
+            tempInput.value = phoneNumber;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            
+            // Show confirmation message
+            const copyMessage = document.getElementById('copyMessage');
+            copyMessage.style.display = 'block';
+            
+            // Hide message after 3 seconds
+            setTimeout(function() {
+                copyMessage.style.display = 'none';
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
