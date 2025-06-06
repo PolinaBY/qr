@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Requested Services</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+     <header>
+        <a href="../file.html" class="back-btn">← Back to main</a>
+        <div class="logo">
+            <img src="../изображение/logo.png" alt="Logo">
+        </div>
+        <h1>REQUESTED SERVICES</h1>
+    </header>
+
+    <form id="servicesForm" action="https://formsubmit.co/p.pollinkaa2501@email.com" method="POST">
+        <!-- Добавляем скрытые поля для настройки FormSubmit -->
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_subject" value="New Aircraft Services Request">
+        
+        <div class="contact-info">
+            <h2>Your Contact Information</h2>
+            <div class="form-group">
+                <label for="userName">Full Name*</label>
+                <input type="text" id="userName" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="userEmail">Email Address*</label>
+                <input type="email" id="userEmail" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="userPhone">Phone Number</label>
+                <input type="tel" id="userPhone" name="phone">
+            </div>
+        </div>
+
+        <div class="services-container">
+            <div class="service-section">
+                <h1>REQUESTED SERVICES UPON ARRIVAL</h1>
+                <!-- Service 1 -->
+                <div class="service-item">
+                    <div class="service-header">
+                        <div class="plus-icon">+</div>
+                        <div class="service-title">FUELING</div>
+                    </div>
+                    <div class="service-content">
+                        <div class="form-group">
+                            <label for="fuel-quantity">QUANTITY (liters)</label>
+                            <input type="number" id="fuel-quantity" name="arrival_fuel_quantity" placeholder="Enter quantity" min="0" step="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="fuel-comment">COMMENT</label>
+                            <textarea id="fuel-comment" name="arrival_fuel_comment" placeholder="Additional information"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+
+        <!-- Service 2 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">LAVATORY SERVICE</div>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lavatory-drain" name="checkbox_lavatory-drain">
+                    <label for="lavatory-drain" >DRAIN & FLUSH</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lavatory-fill" name="checkbox_lavatory-fill">
+                    <label for="lavatory-fill">FILL</label>
+                </div>
+                <div class="form-group">
+                    <label for="lavatory-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="lavatory-quantity" name="arrival_lavatory_quantity" placeholder="Enter quantity" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="lavatory-comment">COMMENT</label>
+                    <textarea id="lavatory-comment" name="lavatory_fuel_comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">CATERING SERVICE</div>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="catering-pickup">
+                    <label for="catering-pickup">PICK UP DISHES & LAUNDRY</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="catering-handover">
+                    <label for="catering-handover">HAND OVER FOOD FOR STORAGE</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="catering-bring">
+                    <label for="catering-bring">BRING THE ORDER</label>
+                </div>
+                <div class="form-group">
+                    <label for="catering-comment">COMMENT</label>
+                    <textarea id="catering-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">GARBAGE REMOVAL</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="garbage-comment">COMMENT</label>
+                    <textarea id="garbage-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">DOCUMENTS PRINTING</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label>LOAD FILES</label>
+                    <div class="file-upload">
+                        <input type="file" id="document-files" multiple>
+                        <label for="document-files">SELECT FILES</label>
+                        <span class="file-name" id="document-files-name">No files selected</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="document-comment">COMMENT</label>
+                    <textarea id="document-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">AIRCRAFT STORAGE IN HANGAR</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="storage-comment">COMMENT</label>
+                    <textarea id="storage-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 7 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">PROVIDE A GPU</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="gpu-comment">COMMENT</label>
+                    <textarea id="gpu-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 8 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">PROVIDE AN ACU</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="acu-comment">COMMENT</label>
+                    <textarea id="acu-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 9 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">PROVIDE A STEPLADDER</div>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="stepladder-above">
+                    <label for="stepladder-above">ABOVE 1.5 m.</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="stepladder-below">
+                    <label for="stepladder-below">BELOW 1.5 m.</label>
+                </div>
+                <div class="form-group">
+                    <label for="stepladder-comment">COMMENT</label>
+                    <textarea id="stepladder-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 10 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">OTHER</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="other-comment">COMMENT</label>
+                    <textarea id="other-comment" placeholder="Describe your request"></textarea>
+                </div>
+            </div>
+        </div>
+        <h1>REQUESTED SERVICES FOR DEPARTURE</h1>
+<!-- Service 1 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">FUELING</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="fuel-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="fuel-quantity" placeholder="Enter quantity" min="0" step="1">
+                    <div class="error-message" id="fuel-quantity-error">Please enter a valid quantity</div>
+                </div>
+                <div class="form-group">
+                    <label for="fuel-comment">COMMENT</label>
+                    <textarea id="fuel-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 2 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">LAVATORY SERVICE</div>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lavatory-drain">
+                    <label for="lavatory-drain">DRAIN & FLUSH</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lavatory-fill">
+                    <label for="lavatory-fill">FILL</label>
+                </div>
+                <div class="form-group">
+                    <label for="lavatory-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="lavatory-quantity" placeholder="Enter quantity" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="lavatory-comment">COMMENT</label>
+                    <textarea id="lavatory-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 3 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">CATERING SERVICE</div>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="catering-pickup">
+                    <label for="catering-pickup">PICK UP DISHES & LAUNDRY</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="catering-handover">
+                    <label for="catering-handover">HAND OVER FOOD FOR STORAGE</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="catering-bring">
+                    <label for="catering-bring">BRING THE ORDER</label>
+                </div>
+                <div class="form-group">
+                    <label for="catering-comment">COMMENT</label>
+                    <textarea id="catering-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">GARBAGE REMOVAL</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="garbage-comment">COMMENT</label>
+                    <textarea id="garbage-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 5 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">DOCUMENTS PRINTING</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label>LOAD FILES</label>
+                    <div class="file-upload">
+                        <input type="file" id="document-files" multiple>
+                        <label for="document-files">SELECT FILES</label>
+                        <span class="file-name" id="document-files-name">No files selected</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="document-comment">COMMENT</label>
+                    <textarea id="document-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 6 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">AIRCRAFT STORAGE IN HANGAR</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="storage-comment">COMMENT</label>
+                    <textarea id="storage-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 7 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">PROVIDE A GPU</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="gpu-comment">COMMENT</label>
+                    <textarea id="gpu-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 8 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">PROVIDE AN ACU</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="acu-comment">COMMENT</label>
+                    <textarea id="acu-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 9 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">PROVIDE A STEPLADDER</div>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="stepladder-above">
+                    <label for="stepladder-above">ABOVE 1.5 m.</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="stepladder-below">
+                    <label for="stepladder-below">BELOW 1.5 m.</label>
+                </div>
+                <div class="form-group">
+                    <label for="stepladder-comment">COMMENT</label>
+                    <textarea id="stepladder-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 10 -->
+        <div class="service-item">
+            <div class="service-header">
+                <div class="plus-icon">+</div>
+                <div class="service-title">OTHER</div>
+            </div>
+            <div class="service-content">
+                <div class="form-group">
+                    <label for="other-comment">COMMENT</label>
+                    <textarea id="other-comment" placeholder="Describe your request"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="file-upload" style="max-width: 500px; margin: 20px auto;">
+            <label>Additional Files (if any)</label>
+            <input type="file" id="document-files" name="attachments" multiple>
+        </div>
+
+        <button type="submit" class="submit-btn">SUBMIT ORDER</button>
+    </form>
+
+    <div class="notification" id="notification">Order submitted successfully! You will receive a confirmation email shortly.</div>
+
+    <script>
+        // Toggle service items
+        document.querySelectorAll('.service-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const plusIcon = this.querySelector('.plus-icon');
+                
+                content.classList.toggle('active');
+                plusIcon.classList.toggle('rotated');
+            });
+        });
+
+        // Обработка успешной отправки формы
+        document.getElementById('servicesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Можно добавить дополнительную валидацию здесь
+            
+            // Создаем FormData и отправляем
+            const formData = new FormData(this);
+            
+            fetch(this.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('notification').style.display = 'block';
+                    this.reset();
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error submitting form. Please try again.');
+            });
+        });
+    </script>
+</body>
+</html>
