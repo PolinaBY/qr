@@ -1,1 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Transfer</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .transfer-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .transfer-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .submit-btn {
+            background-color: #1a75cf;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: #145fa0;
+        }
+        
+        .notification {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-btn">← Back to main</a>
+        <div class="logo">
+            <img src="../изображение/logo.png" alt="Logo">
+        </div>
+        <h1>ORDER TRANSFER</h1>
+    </header>
 
+    <div class="transfer-container">
+        <form id="transferForm" class="transfer-form" action="https://formsubmit.co/your@email.com" method="POST">
+            <!-- FormSubmit Configuration -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_subject" value="New Transfer Order">
+            <input type="hidden" name="_next" value="?success=true">
+            
+            <div class="form-group">
+                <label for="from">From (Pickup Location)*</label>
+                <input type="text" id="from" name="from" required placeholder="Airport, hotel, address...">
+            </div>
+            
+            <div class="form-group">
+                <label for="to">To (Destination)*</label>
+                <input type="text" id="to" name="to" required placeholder="Airport, hotel, address...">
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Date*</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time">Time*</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="passengers">Number of Passengers*</label>
+                <select id="passengers" name="passengers" required>
+                    <option value="" disabled selected>Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6+">6+</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="vehicle">Vehicle Type</label>
+                <select id="vehicle" name="vehicle">
+                    <option value="" selected>Any</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Minivan">Minivan</option>
+                    <option value="Luxury">Luxury</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Special Instructions</label>
+                <textarea id="notes" name="notes" placeholder="Flight number, special requirements..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact">Contact Phone*</label>
+                <input type="tel" id="contact" name="contact" required placeholder="Your phone number">
+            </div>
+            
+            <button type="submit" class="submit-btn">REQUEST TRANSFER</button>
+            
+            <div class="notification" id="notification"></div>
+        </form>
+    </div>
+
+    <script>
+        // Set minimum date to today
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+        
+        // Handle form submission
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            const notification = document.getElementById('notification');
+            
+            // Client-side validation
+            if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value || !this.contact.value) {
+                e.preventDefault();
+                notification.textContent = 'Please fill in all required fields';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
+                return;
+            }
+            
+            // Check phone number format
+            if (!/^[\d\s\+\(\)\-]{7,}$/.test(this.contact.value)) {
+                e.preventDefault();
+                notification.textContent = 'Please enter a valid phone number';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
+                return;
+            }
+        });
+        
+        // Check for success parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            const notification = document.getElementById('notification');
+            notification.textContent = 'Transfer request submitted successfully! We will contact you shortly.';
+            notification.className = 'notification success';
+            notification.style.display = 'block';
+            
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Transfer</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .transfer-container {
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .transfer-form {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .submit-btn {
+            background-color: #1a75cf;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            width: 100%;
+        }
+        
+        .submit-btn:hover {
+            background-color: #145fa0;
+        }
+        
+        .notification {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../file.html" class="back-btn">← Back to main</a>
+        <div class="logo">
+            <img src="../изображение/logo.png" alt="Logo">
+        </div>
+        <h1>ORDER TRANSFER</h1>
+    </header>
+
+    <div class="transfer-container">
+        <form id="transferForm" class="transfer-form" action="https://formsubmit.co/your@email.com" method="POST">
+            <!-- FormSubmit Configuration -->
+            <input type="hidden" name="_captcha" value="false">
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_subject" value="New Transfer Order">
+            <input type="hidden" name="_next" value="?success=true">
+            
+            <div class="form-group">
+                <label for="from">From (Pickup Location)*</label>
+                <input type="text" id="from" name="from" required placeholder="Airport, hotel, address...">
+            </div>
+            
+            <div class="form-group">
+                <label for="to">To (Destination)*</label>
+                <input type="text" id="to" name="to" required placeholder="Airport, hotel, address...">
+            </div>
+            
+            <div class="form-group">
+                <label for="date">Date*</label>
+                <input type="date" id="date" name="date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="time">Time*</label>
+                <input type="time" id="time" name="time" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="passengers">Number of Passengers*</label>
+                <select id="passengers" name="passengers" required>
+                    <option value="" disabled selected>Select</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6+">6+</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="vehicle">Vehicle Type</label>
+                <select id="vehicle" name="vehicle">
+                    <option value="" selected>Any</option>
+                    <option value="Sedan">Sedan</option>
+                    <option value="SUV">SUV</option>
+                    <option value="Minivan">Minivan</option>
+                    <option value="Luxury">Luxury</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="notes">Special Instructions</label>
+                <textarea id="notes" name="notes" placeholder="Flight number, special requirements..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact">Contact Phone*</label>
+                <input type="tel" id="contact" name="contact" required placeholder="Your phone number">
+            </div>
+            
+            <button type="submit" class="submit-btn">REQUEST TRANSFER</button>
+            
+            <div class="notification" id="notification"></div>
+        </form>
+    </div>
+
+    <script>
+        // Set minimum date to today
+        document.getElementById('date').min = new Date().toISOString().split('T')[0];
+        
+        // Handle form submission
+        document.getElementById('transferForm').addEventListener('submit', function(e) {
+            const notification = document.getElementById('notification');
+            
+            // Client-side validation
+            if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value || !this.contact.value) {
+                e.preventDefault();
+                notification.textContent = 'Please fill in all required fields';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
+                return;
+            }
+            
+            // Check phone number format
+            if (!/^[\d\s\+\(\)\-]{7,}$/.test(this.contact.value)) {
+                e.preventDefault();
+                notification.textContent = 'Please enter a valid phone number';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
+                return;
+            }
+        });
+        
+        // Check for success parameter in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('success') === 'true') {
+            const notification = document.getElementById('notification');
+            notification.textContent = 'Transfer request submitted successfully! We will contact you shortly.';
+            notification.className = 'notification success';
+            notification.style.display = 'block';
+            
+            // Clear URL parameters
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            // Hide notification after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
