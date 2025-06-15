@@ -6,6 +6,7 @@
     <title>Order Transfer</title>
     <link rel="stylesheet" href="../style.css">
     <style>
+        /* Основные стили остаются без изменений */
         .transfer-container {
             max-width: 600px;
             margin: 2rem auto;
@@ -17,6 +18,8 @@
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            margin-bottom: 2rem;
         }
         
         .form-group {
@@ -31,7 +34,8 @@
         }
         
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #ddd;
@@ -40,7 +44,7 @@
             font-size: 1rem;
         }
         
-        .submit-btn {
+        .submit-btn, .add-btn {
             background-color: #1a75cf;
             color: white;
             border: none;
@@ -50,9 +54,10 @@
             font-size: 1rem;
             transition: background-color 0.3s;
             width: 100%;
+            margin-bottom: 1rem;
         }
         
-        .submit-btn:hover {
+        .submit-btn:hover, .add-btn:hover {
             background-color: #145fa0;
         }
         
@@ -73,25 +78,118 @@
             background-color: #f8d7da;
             color: #721c24;
         }
+        
+        .transfers-list {
+            margin-bottom: 2rem;
+        }
+        
+        .transfer-item {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .transfer-item p {
+            margin: 0.5rem 0;
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 0;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .cancel-btn {
+            background-color: #6c757d;
+        }
+        
+        .cancel-btn:hover {
+            background-color: #5a6268;
+        }
+        
+        /* Стили для промежуточных остановок */
+        .stops-container {
+            margin-top: 1rem;
+        }
+        
+        .stop-item {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        
+        .stop-item input {
+            flex-grow: 1;
+        }
+        
+        .add-stop-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        
+        .remove-stop-btn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <header>
-        <a href="../index.html" class="back-btn">← Back to main</a>
+        <a href="main.html" class="back-btn">← Back to main</a>
         <div class="logo">
             <img src="../изображение/logo.png" alt="Logo">
         </div>
         <h1>ORDER TRANSFER</h1>
     </header>
 
+    <div class="user-info-bar" id="userInfoBar">
+        <div class="user-info-item"><strong>Name:</strong> <span id="info-name"></span></div>
+        <div class="user-info-item"><strong>Phone:</strong> <span id="info-phone"></span></div>
+        <div class="user-info-item"><strong>Flight:</strong> <span id="info-flight"></span></div>
+    </div>
+
     <div class="transfer-container">
-        <form id="transferForm" class="transfer-form" action="https://formsubmit.co/your@email.com" method="POST">
-            <!-- FormSubmit Configuration -->
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_subject" value="New Transfer Order">
-            <input type="hidden" name="_next" value="?success=true">
-            
+        <div class="transfers-list" id="transfersList">
+            <!-- Список добавленных трансферов будет здесь -->
+        </div>
+        
+        <button class="add-btn" id="addTransferBtn">ADD TRANSFER</button>
+        
+        <form id="transferForm" class="transfer-form">
             <div class="form-group">
                 <label for="from">From (Pickup Location)*</label>
                 <input type="text" id="from" name="from" required placeholder="Airport, hotel, address...">
@@ -100,6 +198,14 @@
             <div class="form-group">
                 <label for="to">To (Destination)*</label>
                 <input type="text" id="to" name="to" required placeholder="Airport, hotel, address...">
+            </div>
+            
+            <div class="form-group">
+                <label>Intermediate Stops</label>
+                <div class="stops-container" id="stopsContainer">
+                    <!-- Промежуточные остановки будут здесь -->
+                </div>
+                <button type="button" class="add-stop-btn" id="addStopBtn">+ Add Stop</button>
             </div>
             
             <div class="form-group">
@@ -126,27 +232,14 @@
             </div>
             
             <div class="form-group">
-                <label for="vehicle">Vehicle Type</label>
-                <select id="vehicle" name="vehicle">
-                    <option value="" selected>Any</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Minivan">Minivan</option>
-                    <option value="Luxury">Luxury</option>
-                </select>
+                <label for="notes">Comment</label>
+                <textarea id="notes" name="notes" placeholder="Comments..."></textarea>
             </div>
             
-            <div class="form-group">
-                <label for="notes">Special Instructions</label>
-                <textarea id="notes" name="notes" placeholder="Flight number, special requirements..."></textarea>
+            <div class="form-actions">
+                <button type="button" class="cancel-btn" id="cancelBtn">Cancel</button>
+                <button type="submit" class="submit-btn">OK</button>
             </div>
-            
-            <div class="form-group">
-                <label for="contact">Contact Phone*</label>
-                <input type="tel" id="contact" name="contact" required placeholder="Your phone number">
-            </div>
-            
-            <button type="submit" class="submit-btn">REQUEST TRANSFER</button>
             
             <div class="notification" id="notification"></div>
         </form>
@@ -156,243 +249,177 @@
         // Set minimum date to today
         document.getElementById('date').min = new Date().toISOString().split('T')[0];
         
+        // Load user data
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('userData');
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                document.getElementById('info-name').textContent = userData.name;
+                document.getElementById('info-phone').textContent = userData.phone;
+                document.getElementById('info-flight').textContent = userData.flightNumber;
+            } else {
+                window.location.href = 'index.html';
+            }
+            
+            // Load saved transfers from localStorage
+            loadTransfers();
+        });
+        
+        // Show/hide form
+        document.getElementById('addTransferBtn').addEventListener('click', function() {
+            document.getElementById('transferForm').style.display = 'block';
+            this.style.display = 'none';
+        });
+        
+        document.getElementById('cancelBtn').addEventListener('click', function() {
+            document.getElementById('transferForm').style.display = 'none';
+            document.getElementById('addTransferBtn').style.display = 'block';
+            document.getElementById('transferForm').reset();
+            // Clear stops
+            document.getElementById('stopsContainer').innerHTML = '';
+        });
+        
+        // Add stop button
+        document.getElementById('addStopBtn').addEventListener('click', function() {
+            addStopInput();
+        });
+        
+        function addStopInput(stopValue = '') {
+            const stopId = Date.now();
+            const stopsContainer = document.getElementById('stopsContainer');
+            const stopDiv = document.createElement('div');
+            stopDiv.className = 'stop-item';
+            stopDiv.innerHTML = `
+                <input type="text" class="stop-input" placeholder="Stop address" value="${stopValue}">
+                <button type="button" class="remove-stop-btn" data-id="${stopId}">×</button>
+            `;
+            stopsContainer.appendChild(stopDiv);
+            
+            // Add event listener to remove button
+            stopDiv.querySelector('.remove-stop-btn').addEventListener('click', function() {
+                stopsContainer.removeChild(stopDiv);
+            });
+        }
+        
         // Handle form submission
         document.getElementById('transferForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
             const notification = document.getElementById('notification');
             
-            // Client-side validation
-            if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value || !this.contact.value) {
-                e.preventDefault();
+            // Validate form
+            if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value) {
                 notification.textContent = 'Please fill in all required fields';
                 notification.className = 'notification error';
                 notification.style.display = 'block';
                 return;
             }
             
-            // Check phone number format
-            if (!/^[\d\s\+\(\)\-]{7,}$/.test(this.contact.value)) {
-                e.preventDefault();
-                notification.textContent = 'Please enter a valid phone number';
-                notification.className = 'notification error';
-                notification.style.display = 'block';
-                return;
-            }
-        });
-        
-        // Check for success parameter in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('success') === 'true') {
-            const notification = document.getElementById('notification');
-            notification.textContent = 'Transfer request submitted successfully! We will contact you shortly.';
+            // Collect stops
+            const stops = [];
+            document.querySelectorAll('.stop-input').forEach(input => {
+                if (input.value.trim()) {
+                    stops.push(input.value.trim());
+                }
+            });
+            
+            // Create transfer object
+            const transfer = {
+                from: this.from.value,
+                to: this.to.value,
+                stops: stops,
+                date: this.date.value,
+                time: this.time.value,
+                passengers: this.passengers.value,
+                notes: this.notes.value,
+                id: Date.now() // Unique ID for each transfer
+            };
+            
+            // Save transfer
+            saveTransfer(transfer);
+            
+            // Reset and hide form
+            this.reset();
+            this.style.display = 'none';
+            document.getElementById('addTransferBtn').style.display = 'block';
+            document.getElementById('stopsContainer').innerHTML = '';
+            
+            // Show success message
+            notification.textContent = 'Transfer added successfully!';
             notification.className = 'notification success';
             notification.style.display = 'block';
             
-            // Clear URL parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Hide notification after 5 seconds
+            // Hide notification after 3 seconds
             setTimeout(() => {
                 notification.style.display = 'none';
-            }, 5000);
-        }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Transfer</title>
-    <link rel="stylesheet" href="../style.css">
-    <style>
-        .transfer-container {
-            max-width: 600px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        
-        .transfer-form {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-        
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 1rem;
-        }
-        
-        .submit-btn {
-            background-color: #1a75cf;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.3s;
-            width: 100%;
-        }
-        
-        .submit-btn:hover {
-            background-color: #145fa0;
-        }
-        
-        .notification {
-            display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            border-radius: 4px;
-            text-align: center;
-        }
-        
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <a href="../file.html" class="back-btn">← Back to main</a>
-        <div class="logo">
-            <img src="../изображение/logo.png" alt="Logo">
-        </div>
-        <h1>ORDER TRANSFER</h1>
-    </header>
-
-    <div class="transfer-container">
-        <form id="transferForm" class="transfer-form" action="https://formsubmit.co/your@email.com" method="POST">
-            <!-- FormSubmit Configuration -->
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_subject" value="New Transfer Order">
-            <input type="hidden" name="_next" value="?success=true">
-            
-            <div class="form-group">
-                <label for="from">From (Pickup Location)*</label>
-                <input type="text" id="from" name="from" required placeholder="Airport, hotel, address...">
-            </div>
-            
-            <div class="form-group">
-                <label for="to">To (Destination)*</label>
-                <input type="text" id="to" name="to" required placeholder="Airport, hotel, address...">
-            </div>
-            
-            <div class="form-group">
-                <label for="date">Date*</label>
-                <input type="date" id="date" name="date" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="time">Time*</label>
-                <input type="time" id="time" name="time" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="passengers">Number of Passengers*</label>
-                <select id="passengers" name="passengers" required>
-                    <option value="" disabled selected>Select</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6+">6+</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="vehicle">Vehicle Type</label>
-                <select id="vehicle" name="vehicle">
-                    <option value="" selected>Any</option>
-                    <option value="Sedan">Sedan</option>
-                    <option value="SUV">SUV</option>
-                    <option value="Minivan">Minivan</option>
-                    <option value="Luxury">Luxury</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="notes">Special Instructions</label>
-                <textarea id="notes" name="notes" placeholder="Flight number, special requirements..."></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="contact">Contact Phone*</label>
-                <input type="tel" id="contact" name="contact" required placeholder="Your phone number">
-            </div>
-            
-            <button type="submit" class="submit-btn">REQUEST TRANSFER</button>
-            
-            <div class="notification" id="notification"></div>
-        </form>
-    </div>
-
-    <script>
-        // Set minimum date to today
-        document.getElementById('date').min = new Date().toISOString().split('T')[0];
-        
-        // Handle form submission
-        document.getElementById('transferForm').addEventListener('submit', function(e) {
-            const notification = document.getElementById('notification');
-            
-            // Client-side validation
-            if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value || !this.contact.value) {
-                e.preventDefault();
-                notification.textContent = 'Please fill in all required fields';
-                notification.className = 'notification error';
-                notification.style.display = 'block';
-                return;
-            }
-            
-            // Check phone number format
-            if (!/^[\d\s\+\(\)\-]{7,}$/.test(this.contact.value)) {
-                e.preventDefault();
-                notification.textContent = 'Please enter a valid phone number';
-                notification.className = 'notification error';
-                notification.style.display = 'block';
-                return;
-            }
+            }, 3000);
         });
         
-        // Check for success parameter in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('success') === 'true') {
-            const notification = document.getElementById('notification');
-            notification.textContent = 'Transfer request submitted successfully! We will contact you shortly.';
-            notification.className = 'notification success';
-            notification.style.display = 'block';
+        // Save transfer to localStorage
+        function saveTransfer(transfer) {
+            let transfers = JSON.parse(localStorage.getItem('transfers') || '[]');
+            transfers.push(transfer);
+            localStorage.setItem('transfers', JSON.stringify(transfers));
+            renderTransfers();
+        }
+        
+        // Load transfers from localStorage
+        function loadTransfers() {
+            renderTransfers();
+        }
+        
+        // Render transfers list
+        function renderTransfers() {
+            const transfersList = document.getElementById('transfersList');
+            const transfers = JSON.parse(localStorage.getItem('transfers') || '[]');
             
-            // Clear URL parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
+            transfersList.innerHTML = '';
             
-            // Hide notification after 5 seconds
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 5000);
+            if (transfers.length === 0) {
+                transfersList.innerHTML = '<p>No transfers added yet.</p>';
+                return;
+            }
+            
+            transfers.forEach(transfer => {
+                const transferItem = document.createElement('div');
+                transferItem.className = 'transfer-item';
+                
+                let stopsHTML = '';
+                if (transfer.stops && transfer.stops.length > 0) {
+                    stopsHTML = '<p><strong>Stops:</strong></p><ul>';
+                    transfer.stops.forEach(stop => {
+                        stopsHTML += `<li>${stop}</li>`;
+                    });
+                    stopsHTML += '</ul>';
+                }
+                
+                transferItem.innerHTML = `
+                    <button class="delete-btn" data-id="${transfer.id}">×</button>
+                    <p><strong>From:</strong> ${transfer.from}</p>
+                    <p><strong>To:</strong> ${transfer.to}</p>
+                    ${stopsHTML}
+                    <p><strong>Date:</strong> ${transfer.date} at ${transfer.time}</p>
+                    <p><strong>Passengers:</strong> ${transfer.passengers}</p>
+                    ${transfer.notes ? `<p><strong>Notes:</strong> ${transfer.notes}</p>` : ''}
+                `;
+                transfersList.appendChild(transferItem);
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    deleteTransfer(id);
+                });
+            });
+        }
+        
+        // Delete transfer
+        function deleteTransfer(id) {
+            let transfers = JSON.parse(localStorage.getItem('transfers') || '[]');
+            transfers = transfers.filter(transfer => transfer.id !== id);
+            localStorage.setItem('transfers', JSON.stringify(transfers));
+            renderTransfers();
         }
     </script>
 </body>
