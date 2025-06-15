@@ -82,12 +82,18 @@
 </head>
 <body>
     <header>
-        <a href="../index.html" class="back-btn">← Back to main</a>
+        <a href="main.html" class="back-btn">← Back to main</a>
         <div class="logo">
             <img src="../изображение/logo.png" alt="Logo">
         </div>
         <h1>TEXT TO US</h1>
     </header>
+
+    <div class="user-info-bar" id="userInfoBar">
+        <div class="user-info-item"><strong>Name:</strong> <span id="info-name"></span></div>
+        <div class="user-info-item"><strong>Phone:</strong> <span id="info-phone"></span></div>
+        <div class="user-info-item"><strong>Flight:</strong> <span id="info-flight"></span></div>
+    </div>
 
     <div class="contact-container">
         <button id="showFormBtn" class="submit-btn">COMPOSE MESSAGE</button>
@@ -176,6 +182,19 @@
                 notification.style.display = 'none';
             }, 5000);
         }
+        // Загружаем данные пользователя при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('userData');
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                document.getElementById('info-name').textContent = userData.name;
+                document.getElementById('info-phone').textContent = userData.phone;
+                document.getElementById('info-flight').textContent = userData.flightNumber;
+            } else {
+                // Если данных нет, перенаправляем на первую страницу
+                window.location.href = 'index.html';
+            }
+        });
     </script>
 </body>
 </html>
