@@ -8,12 +8,18 @@
 </head>
 <body>
      <header>
-        <a href="../index.html" class="back-btn">← Back to main</a>
+        <a href="main.html" class="back-btn">← Back to main</a>
         <div class="logo">
             <img src="../изображение/logo.png" alt="Logo">
         </div>
         <h1>REQUESTED SERVICES</h1>
     </header>
+
+    <div class="user-info-bar" id="userInfoBar">
+        <div class="user-info-item"><strong>Name:</strong> <span id="info-name"></span></div>
+        <div class="user-info-item"><strong>Phone:</strong> <span id="info-phone"></span></div>
+        <div class="user-info-item"><strong>Flight:</strong> <span id="info-flight"></span></div>
+    </div>
 
     <form id="servicesForm" action="https://formsubmit.co/p.pollinkaa2501@email.com" method="POST">
         <!-- Добавляем скрытые поля для настройки FormSubmit -->
@@ -24,16 +30,8 @@
         <div class="contact-info">
             <h2>Your Contact Information</h2>
             <div class="form-group">
-                <label for="userName">Full Name*</label>
-                <input type="text" id="userName" name="name" required>
-            </div>
-            <div class="form-group">
                 <label for="userEmail">Email Address*</label>
                 <input type="email" id="userEmail" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="userPhone">Phone Number</label>
-                <input type="tel" id="userPhone" name="phone">
             </div>
         </div>
 
@@ -43,8 +41,8 @@
                 <!-- Service 1 -->
                 <div class="service-item">
                     <div class="service-header">
-                        <div class="plus-icon">+</div>
-                        <div class="service-title">FUELING</div>
+                        <input type="checkbox" id="arrival-fuel-checkbox" class="service-checkbox">
+                        <label for="arrival-fuel-checkbox" class="service-title">FUELING</label>
                     </div>
                     <div class="service-content">
                         <div class="form-group">
@@ -58,38 +56,63 @@
                     </div>
                 </div>
                 
-
         <!-- Service 2 -->
-        <div class="service-item">
+         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">LAVATORY SERVICE</div>
+                <input type="checkbox" id="arrival-water-checkbox" class="service-checkbox">
+                <label for="arrival-water-checkbox" class="service-title">POTABLE WATER SERVICE</label>
             </div>
             <div class="service-content">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="lavatory-drain" name="checkbox_lavatory-drain">
-                    <label for="lavatory-drain" >DRAIN & FLUSH</label>
+                    <input type="checkbox" id="water-drain" name="water-drain">
+                    <label for="water-drain">DRAIN</label>
                 </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="lavatory-fill" name="checkbox_lavatory-fill">
-                    <label for="lavatory-fill">FILL</label>
+                    <input type="checkbox" id="arrival-water-fill" name="arrival-water-fill">
+                    <label for="arrival-water-fill">FILL</label>
+                </div>
+                <div class="form-group" id="arrival-water-quantity-group" style="display: none;">
+                    <label for="water-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="arrival-water-quantity" name="arrival-water-quantity" placeholder="Enter quantity" min="0" step="1">
                 </div>
                 <div class="form-group">
-                    <label for="lavatory-quantity">QUANTITY (liters)</label>
-                    <input type="number" id="lavatory-quantity" name="arrival_lavatory_quantity" placeholder="Enter quantity" min="0" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="lavatory-comment">COMMENT</label>
-                    <textarea id="lavatory-comment" name="lavatory_fuel_comment" placeholder="Additional information"></textarea>
+                    <label for="water-comment">COMMENT</label>
+                    <textarea id="water-comment" name="water-comment" placeholder="Additional information"></textarea>
                 </div>
             </div>
         </div>
 
         <!-- Service 3 -->
+         <div class="service-item">
+            <div class="service-header">
+                <input type="checkbox" id="arrival-lavatory-checkbox" class="service-checkbox">
+                <label for="arrival-lavatory-checkbox" class="service-title">LAVATORY SERVICE</label>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lavatory-drain" name="lavatory-drain">
+                    <label for="lavatory-drain">DRAIN & FLUSH</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="arrival-lavatory-fill" name="arrival-lavatory-fill">
+                    <label for="arrival-lavatory-fill">FILL</label>
+                </div>
+                <div class="form-group" id="arrival-lavatory-quantity-group" style="display: none;">
+                    <label for="lavatory-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="arrival-lavatory-quantity" name="arrival-lavatory-quantity" placeholder="Enter quantity" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="lavatory-comment">COMMENT</label>
+                    <textarea id="lavatory-comment" name="lavatory-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">CATERING SERVICE</div>
+                <input type="checkbox" id="arrival-catering-checkbox" class="service-checkbox">
+                <label for="arrival-catering-checkbox" class="service-title">CATERING SERVICE</label>
             </div>
             <div class="service-content">
                 <div class="checkbox-group">
@@ -111,11 +134,11 @@
             </div>
         </div>
 
-        <!-- Service 4 -->
+        <!-- Service 5 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">GARBAGE REMOVAL</div>
+                <input type="checkbox" id="arrival-garbage-checkbox" class="service-checkbox">
+                <label for="arrival-garbage-checkbox" class="service-title">GARBAGE REMOVAL</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -125,33 +148,33 @@
             </div>
         </div>
 
-        <!-- Service 5 -->
+        <!-- Service 6 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">DOCUMENTS PRINTING</div>
+                <input type="checkbox" id="arrival-documents-checkbox" class="service-checkbox">
+                <label for="arrival-documents-checkbox" class="service-title">DOCUMENTS PRINTING</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
                     <label>LOAD FILES</label>
                     <div class="file-upload">
-                        <input type="file" id="document-files" multiple>
-                        <label for="document-files">SELECT FILES</label>
-                        <span class="file-name" id="document-files-name">No files selected</span>
+                        <input type="file" id="arrival-document-files" name="arrival-document-files" multiple>
+                        <label for="arrival-document-files" class="file-upload-label">SELECT FILES</label>
+                        <span class="file-name" id="arrival-document-files-name">No files selected</span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="document-comment">COMMENT</label>
-                    <textarea id="document-comment" placeholder="Additional information"></textarea>
+                    <label for="arrival-document-comment">COMMENT</label>
+                    <textarea id="arrival-document-comment" name="arrival-document-comment" placeholder="Additional information"></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Service 6 -->
+        <!-- Service 7 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">AIRCRAFT STORAGE IN HANGAR</div>
+                <input type="checkbox" id="arrival-storage-checkbox" class="service-checkbox">
+                <label for="arrival-storage-checkbox" class="service-title">AIRCRAFT STORAGE IN HANGAR</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -161,11 +184,11 @@
             </div>
         </div>
 
-        <!-- Service 7 -->
+        <!-- Service 8 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">PROVIDE A GPU</div>
+                <input type="checkbox" id="arrival-gpu-checkbox" class="service-checkbox">
+                <label for="arrival-gpu-checkbox" class="service-title">PROVIDE A GPU</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -175,11 +198,11 @@
             </div>
         </div>
 
-        <!-- Service 8 -->
+        <!-- Service 9 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">PROVIDE AN ACU</div>
+                <input type="checkbox" id="arrival-acu-checkbox" class="service-checkbox">
+                <label for="arrival-acu-checkbox" class="service-title">PROVIDE AN ACU</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -189,16 +212,16 @@
             </div>
         </div>
 
-        <!-- Service 9 -->
+        <!-- Service 10 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">PROVIDE A STEPLADDER</div>
+                <input type="checkbox" id="arrival-stepladder-checkbox" class="service-checkbox">
+                <label for="arrival-stepladder-checkbox" class="service-title">PROVIDE A STEPLADDER</label>
             </div>
             <div class="service-content">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="stepladder-above">
-                    <label for="stepladder-above">ABOVE 1.5 m.</label>
+                    <input type="checkbox" id="arrival-stepladder-above">
+                    <label for="arrival-stepladder-above">ABOVE 1.5 m.</label>
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="stepladder-below">
@@ -211,11 +234,11 @@
             </div>
         </div>
 
-        <!-- Service 10 -->
+        <!-- Service 11 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">OTHER</div>
+                <input type="checkbox" id="arrival-other-checkbox" class="service-checkbox">
+                <label for="arrival-other-checkbox" class="service-title">OTHER</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -225,11 +248,11 @@
             </div>
         </div>
         <h1>REQUESTED SERVICES FOR DEPARTURE</h1>
-<!-- Service 1 -->
+        <!-- Service 1 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">FUELING</div>
+                <input type="checkbox" id="departure-fuel-checkbox" class="service-checkbox">
+                <label for="departure-fuel-checkbox" class="service-title">FUELING</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -245,36 +268,63 @@
         </div>
 
         <!-- Service 2 -->
-        <div class="service-item">
+         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">LAVATORY SERVICE</div>
+                <input type="checkbox" id="departure-water-checkbox" class="service-checkbox">
+                <label for="departure-water-checkbox" class="service-title">POTABLE WATER SERVICE</label>
             </div>
             <div class="service-content">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="lavatory-drain">
-                    <label for="lavatory-drain">DRAIN & FLUSH</label>
+                    <input type="checkbox" id="water-drain" name="water-drain">
+                    <label for="water-drain">DRAIN</label>
                 </div>
                 <div class="checkbox-group">
-                    <input type="checkbox" id="lavatory-fill">
-                    <label for="lavatory-fill">FILL</label>
+                    <input type="checkbox" id="departure-water-fill" name="departure-water-fill">
+                    <label for="departure-water-fill">FILL</label>
+                </div>
+                <div class="form-group" id="departure-water-quantity-group" style="display: none;">
+                    <label for="water-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="departure-water-quantity" name="departure-water-quantity" placeholder="Enter quantity" min="0" step="1">
                 </div>
                 <div class="form-group">
-                    <label for="lavatory-quantity">QUANTITY (liters)</label>
-                    <input type="number" id="lavatory-quantity" placeholder="Enter quantity" min="0" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="lavatory-comment">COMMENT</label>
-                    <textarea id="lavatory-comment" placeholder="Additional information"></textarea>
+                    <label for="water-comment">COMMENT</label>
+                    <textarea id="water-comment" name="water-comment" placeholder="Additional information"></textarea>
                 </div>
             </div>
         </div>
 
+
         <!-- Service 3 -->
+         <div class="service-item">
+            <div class="service-header">
+                <input type="checkbox" id="departure-lavatory-checkbox" class="service-checkbox">
+                <label for="departure-lavatory-checkbox" class="service-title">LAVATORY SERVICE</label>
+            </div>
+            <div class="service-content">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="lavatory-drain" name="lavatory-drain">
+                    <label for="lavatory-drain">DRAIN & FLUSH</label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="departure-lavatory-fill" name="departure-lavatory-fill">
+                    <label for="departure-lavatory-fill">FILL</label>
+                </div>
+                <div class="form-group" id="departure-lavatory-quantity-group" style="display: none;">
+                    <label for="lavatory-quantity">QUANTITY (liters)</label>
+                    <input type="number" id="departure-lavatory-quantity" name="departure-lavatory-quantity" placeholder="Enter quantity" min="0" step="1">
+                </div>
+                <div class="form-group">
+                    <label for="lavatory-comment">COMMENT</label>
+                    <textarea id="lavatory-comment" name="lavatory-comment" placeholder="Additional information"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Service 4 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">CATERING SERVICE</div>
+                <input type="checkbox" id="departure-catering-checkbox" class="service-checkbox">
+                <label for="departure-catering-checkbox" class="service-title">CATERING SERVICE</label>
             </div>
             <div class="service-content">
                 <div class="checkbox-group">
@@ -296,11 +346,11 @@
             </div>
         </div>
 
-        <!-- Service 4 -->
+        <!-- Service 5 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">GARBAGE REMOVAL</div>
+                <input type="checkbox" id="departure-garbage-checkbox" class="service-checkbox">
+                <label for="departure-garbage-checkbox" class="service-title">GARBAGE REMOVAL</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -310,33 +360,34 @@
             </div>
         </div>
 
-        <!-- Service 5 -->
+       <!-- Service 6 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">DOCUMENTS PRINTING</div>
+                <input type="checkbox" id="departure-documents-checkbox" class="service-checkbox">
+                <label for="departure-documents-checkbox" class="service-title">DOCUMENTS PRINTING</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
                     <label>LOAD FILES</label>
                     <div class="file-upload">
-                        <input type="file" id="document-files" multiple>
-                        <label for="document-files">SELECT FILES</label>
-                        <span class="file-name" id="document-files-name">No files selected</span>
+                        <input type="file" id="departure-document-files" name="departure-document-files" multiple>
+                        <label for="departure-document-files" class="file-upload-label">SELECT FILES</label>
+                        <span class="file-name" id="departure-document-files-name">No files selected</span>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="document-comment">COMMENT</label>
-                    <textarea id="document-comment" placeholder="Additional information"></textarea>
+                    <label for="departure-document-comment">COMMENT</label>
+                    <textarea id="departure-document-comment" name="departure-document-comment" placeholder="Additional information"></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- Service 6 -->
+
+        <!-- Service 7 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">AIRCRAFT STORAGE IN HANGAR</div>
+                <input type="checkbox" id="departure-storage-checkbox" class="service-checkbox">
+                <label for="departure-storage-checkbox" class="service-title">AIRCRAFT STORAGE IN HANGAR</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -346,11 +397,11 @@
             </div>
         </div>
 
-        <!-- Service 7 -->
+        <!-- Service 8 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">PROVIDE A GPU</div>
+                <input type="checkbox" id="departure-gpu-checkbox" class="service-checkbox">
+                <label for="departure-gpu-checkbox" class="service-title">PROVIDE A GPU</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -360,11 +411,11 @@
             </div>
         </div>
 
-        <!-- Service 8 -->
+        <!-- Service 9 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">PROVIDE AN ACU</div>
+                <input type="checkbox" id="departure-acu-checkbox" class="service-checkbox">
+                <label for="departure-acu-checkbox" class="service-title">PROVIDE AN ACU</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -374,16 +425,16 @@
             </div>
         </div>
 
-        <!-- Service 9 -->
+        <!-- Service 10 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">PROVIDE A STEPLADDER</div>
+                <input type="checkbox" id="departure-stepladder-checkbox" class="service-checkbox">
+                <label for="departure-stepladder-checkbox" class="service-title">PROVIDE A STEPLADDER</label>
             </div>
             <div class="service-content">
                 <div class="checkbox-group">
-                    <input type="checkbox" id="stepladder-above">
-                    <label for="stepladder-above">ABOVE 1.5 m.</label>
+                    <input type="checkbox" id="departure-stepladder-above">
+                    <label for="departure-stepladder-above">ABOVE 1.5 m.</label>
                 </div>
                 <div class="checkbox-group">
                     <input type="checkbox" id="stepladder-below">
@@ -396,11 +447,11 @@
             </div>
         </div>
 
-        <!-- Service 10 -->
+        <!-- Service 11 -->
         <div class="service-item">
             <div class="service-header">
-                <div class="plus-icon">+</div>
-                <div class="service-title">OTHER</div>
+                <input type="checkbox" id="departure-other-checkbox" class="service-checkbox">
+                <label for="departure-other-checkbox" class="service-title">OTHER</label>
             </div>
             <div class="service-content">
                 <div class="form-group">
@@ -410,35 +461,101 @@
             </div>
         </div>
     </div>
-    <div class="file-upload" style="max-width: 500px; margin: 20px auto;">
-            <label>Additional Files (if any)</label>
-            <input type="file" id="document-files" name="attachments" multiple>
-        </div>
-
         <button type="submit" class="submit-btn">SUBMIT ORDER</button>
     </form>
 
     <div class="notification" id="notification">Order submitted successfully! You will receive a confirmation email shortly.</div>
 
-    <script>
-        // Toggle service items
-        document.querySelectorAll('.service-header').forEach(header => {
-            header.addEventListener('click', function() {
-                const content = this.nextElementSibling;
-                const plusIcon = this.querySelector('.plus-icon');
-                
-                content.classList.toggle('active');
-                plusIcon.classList.toggle('rotated');
-            });
-        });
+    <script src="../script.js"></script>
 
-        // Обработка успешной отправки формы
+   <script>
+    // Универсальная функция для настройки сервисов
+    function setupService(checkboxId) {
+        const checkbox = document.getElementById(checkboxId);
+        if (!checkbox) return;
+        
+        const content = checkbox.closest('.service-item').querySelector('.service-content');
+        
+        checkbox.addEventListener('change', function() {
+            content.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        content.style.display = checkbox.checked ? 'block' : 'none';
+    }
+
+    function setupWaterService(prefix) {
+        setupService(`${prefix}-water-checkbox`);
+        
+        const fillCheckbox = document.getElementById(`${prefix}-water-fill`);
+        const quantityGroup = document.getElementById(`${prefix}-water-quantity-group`);
+        
+        if (fillCheckbox && quantityGroup) {
+            fillCheckbox.addEventListener('change', function() {
+                quantityGroup.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) {
+                    document.getElementById(`${prefix}-water-quantity`).value = '';
+                }
+            });
+            quantityGroup.style.display = fillCheckbox.checked ? 'block' : 'none';
+        }
+    }
+
+    function setupLavatoryService(prefix) {
+        setupService(`${prefix}-lavatory-checkbox`);
+        
+        const fillCheckbox = document.getElementById(`${prefix}-lavatory-fill`);
+        const quantityGroup = document.getElementById(`${prefix}-lavatory-quantity-group`);
+        
+        if (fillCheckbox && quantityGroup) {
+            fillCheckbox.addEventListener('change', function() {
+                quantityGroup.style.display = this.checked ? 'block' : 'none';
+                if (!this.checked) {
+                    document.getElementById(`${prefix}-lavatory-quantity`).value = '';
+                }
+            });
+            quantityGroup.style.display = fillCheckbox.checked ? 'block' : 'none';
+        }
+    }
+
+    function setupFileUpload(inputId, displayId) {
+        const fileInput = document.getElementById(inputId);
+        const fileNameDisplay = document.getElementById(displayId);
+        
+        if (fileInput && fileNameDisplay) {
+            fileInput.addEventListener('change', function() {
+                const files = this.files;
+                fileNameDisplay.textContent = files.length === 0 ? 'No files selected' : 
+                                           files.length === 1 ? files[0].name : 
+                                           `${files.length} files selected`;
+            });
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Настройка всех сервисов
+        const services = [
+            'arrival-fuel-checkbox', 'arrival-catering-checkbox', 'arrival-garbage-checkbox',
+            'arrival-storage-checkbox', 'arrival-gpu-checkbox', 'arrival-acu-checkbox',
+            'arrival-stepladder-checkbox', 'arrival-other-checkbox', 'arrival-documents-checkbox',
+            'departure-fuel-checkbox', 'departure-catering-checkbox', 'departure-garbage-checkbox',
+            'departure-storage-checkbox', 'departure-gpu-checkbox', 'departure-acu-checkbox',
+            'departure-stepladder-checkbox', 'departure-other-checkbox', 'departure-documents-checkbox'
+        ];
+        
+        services.forEach(serviceId => setupService(serviceId));
+        
+        setupLavatoryService('arrival');
+        setupLavatoryService('departure');
+
+        setupWaterService('arrival');
+        setupWaterService('departure');
+        
+        setupFileUpload('arrival-document-files', 'arrival-document-files-name');
+        setupFileUpload('departure-document-files', 'departure-document-files-name');
+
+        // Обработка формы
         document.getElementById('servicesForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // Можно добавить дополнительную валидацию здесь
-            
-            // Создаем FormData и отправляем
             const formData = new FormData(this);
             
             fetch(this.action, {
@@ -452,6 +569,9 @@
                 if (response.ok) {
                     document.getElementById('notification').style.display = 'block';
                     this.reset();
+                    setTimeout(() => {
+                        document.getElementById('notification').style.display = 'none';
+                    }, 5000);
                 } else {
                     throw new Error('Form submission failed');
                 }
@@ -461,6 +581,18 @@
                 alert('Error submitting form. Please try again.');
             });
         });
-    </script>
+
+        // Загрузка данных пользователя
+        const savedData = localStorage.getItem('userData');
+        if (savedData) {
+            const userData = JSON.parse(savedData);
+            document.getElementById('info-name').textContent = userData.name || 'Not provided';
+            document.getElementById('info-phone').textContent = userData.phone || 'Not provided';
+            document.getElementById('info-flight').textContent = userData.flightNumber || 'Not provided';
+        } else {
+            window.location.href = 'index.html';
+        }
+    });
+</script>
 </body>
 </html>
