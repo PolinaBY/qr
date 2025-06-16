@@ -117,7 +117,7 @@
             
             <div class="form-group">
                 <label for="phone">Phone Number*</label>
-                <input type="tel" id="phone" placeholder="Enter your phone number" required>
+                <input type="text" id="phone-input" placeholder="+7 (___) ___-__-__">
                 <div class="error-message" id="phone-error">Please enter a valid phone number</div>
             </div>
             
@@ -136,13 +136,93 @@
         const submitBtn = document.getElementById('submitBtn');
         const inputs = form.querySelectorAll('input[required]');
         
-        // Validate phone number format
-        function validatePhone(phone) {
-            const re = /^[\d\s\+\(\)\-]{7,}$/;
-            return re.test(phone);
+       function formatPhoneInput(input) {
+    // Устанавливаем начальное значение с маской
+    if (!input.value || input.value === '') {
+        input.value = '+7 (___) ___-__-__';
+    }
+
+    input.addEventListener('focus', function(e) {
+        if (this.value === '+7 (___) ___-__-__') {
+            this.value = '+7 (';
         }
+    });
+
+    input.addEventListener('blur', function(e) {
+        if (this.value === '+7 (') {
+            this.value = '+7 (___) ___-__-__';
+        }
+    });
+
+    input.addEventListener('input', function(e) {
+        // Получаем позицию курсора
+        const cursorPosition = this.selectionStart;
+        let originalValue = this.value.replace(/\D/g, '');
         
-        // Check if all fields are valid
+        // Если ввод начался с пустого поля или маски
+        if (originalValue === '' && this.value === '+7 (___) ___-__-__') {
+            originalValue = '7';
+        }
+
+        let formattedValue = '+7 (';
+        
+        if (originalValue.length > 1) {
+            formattedValue += originalValue.substring(1, 4);
+        }
+        if (originalValue.length >= 4) {
+            formattedValue += ') ' + originalValue.substring(4, 7);
+        }
+        if (originalValue.length >= 7) {
+            formattedValue += '-' + originalValue.substring(7, 9);
+        }
+        if (originalValue.length >= 9) {
+            formattedValue += '-' + originalValue.substring(9, 11);
+        }
+
+       
+        this.value = formattedValue;
+
+        // Восстанавливаем позицию курсора
+        if (cursorPosition === 4 && originalValue.length < 2) {
+            this.setSelectionRange(4, 4);
+        } else if (cursorPosition === 7 && originalValue.length < 5) {
+            this.setSelectionRange(7, 7);
+        } else if (cursorPosition === 11 && originalValue.length < 8) {
+            this.setSelectionRange(11, 11);
+        } else if (cursorPosition === 14 && originalValue.length < 10) {
+            this.setSelectionRange(14, 14);
+        }
+    });
+
+    // удаление символов
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+            const cursorPosition = this.selectionStart;
+            if (cursorPosition <= 4 || 
+                (cursorPosition > 7 && cursorPosition < 9) || 
+                (cursorPosition > 11 && cursorPosition < 12) || 
+                (cursorPosition > 14 && cursorPosition < 15)) {
+                e.preventDefault();
+            }
+        }
+    });
+}
+
+// Функция валидации телефона
+function validatePhone(phone) {
+    const re = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/;
+    return re.test(phone);
+}
+
+
+const phoneInput = document.getElementById('phone-input'); 
+formatPhoneInput(phoneInput);
+
+if (validatePhone(phoneInput.value)) {
+    console.log('Номер верный');
+} else {
+    console.log('Номер неверный');
+}
         function checkFormValidity() {
             let isValid = true;
             
@@ -159,7 +239,6 @@
             submitBtn.disabled = !isValid;
         }
         
-        // Validate on input
         inputs.forEach(input => {
             input.addEventListener('input', function() {
                 const errorElement = document.getElementById(`${this.id}-error`);
@@ -180,11 +259,9 @@
             });
         });
         
-        // Handle form submission
         form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Save data to localStorage (optional)
             const formData = {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
@@ -194,11 +271,9 @@
             
             localStorage.setItem('userData', JSON.stringify(formData));
             
-            // Redirect to main page
             window.location.href = 'pages/main.html';
         });
         
-        // Initial check for prefilled data (optional)
         window.addEventListener('DOMContentLoaded', () => {
             checkFormValidity();
         });
@@ -212,10 +287,8 @@
                 flightNumber: document.getElementById('flightNumber').value
             };
             
-            // Сохраняем в localStorage
             localStorage.setItem('userData', JSON.stringify(userData));
-            
-            // Перенаправляем на главную
+    
             window.location.href = 'pages/main.html';
         });
 
