@@ -97,37 +97,39 @@
 
     <div class="contact-container">
         <button id="showFormBtn" class="submit-btn">COMPOSE MESSAGE</button>
-        
-        <form id="contactForm" class="contact-form" action="https://formsubmit.co/p.pollinkaa2501@email.com" method="POST">
-            <!-- FormSubmit Configuration -->
-            <input type="hidden" name="_captcha" value="false">
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_subject" value="New Message from Contact Form">
-            <input type="hidden" name="_next" value="?success=true">
-            
+        <form id="contactForm" style="display: none;">
             <div class="form-group">
-                <label for="name">Your Name*</label>
-                <input type="text" id="name" name="name" required>
+                <label>Massage</label>
+                <textarea name="message" required></textarea>
             </div>
-            
-            <div class="form-group">
-                <label for="email">Your Email*</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="message">Message*</label>
-                <textarea id="message" name="message" required></textarea>
-            </div>
-            
-            <button type="submit" class="submit-btn">SEND MESSAGE</button>
-            
-            <div class="notification" id="notification"></div>
+            <button type="submit">SEND</button>
+            <div id="form-message"></div>
         </form>
     </div>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+   <script>
+        // Загружаем данные пользователя при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedData = localStorage.getItem('userData');
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                document.getElementById('info-name').textContent = userData.name;
+                document.getElementById('info-phone').textContent = userData.phone;
+                document.getElementById('info-flight').textContent = userData.flightNumber;
+                
+                // Сохраняем данные пользователя в data-атрибуты формы
+                const form = document.getElementById('contactForm');
+                form.dataset.userName = userData.name;
+                form.dataset.userPhone = userData.phone;
+                form.dataset.userFlight = userData.flightNumber;
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
 
-    <script>
-        // Show/hide form
+        // Показ\скрытие формы
         document.getElementById('showFormBtn').addEventListener('click', function() {
             const form = document.getElementById('contactForm');
             const btn = document.getElementById('showFormBtn');
@@ -140,59 +142,54 @@
                 btn.textContent = 'HIDE FORM';
             }
         });
-        
-        // Handle form submission
-        document.getElementById('contactForm').addEventListener('submit', function(e) {
-            const notification = document.getElementById('notification');
+
+        // Инициализация EmailJS
+        emailjs.init('5taBVN-c3p3SoTNfe');
+
+        const form = document.getElementById('contactForm');
+        const messageDiv = document.getElementById('form-message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            messageDiv.textContent = 'Sending...';
+            messageDiv.className = '';
             
-            // Client-side validation
-            if (!this.name.value || !this.email.value || !this.message.value) {
-                e.preventDefault();
-                notification.textContent = 'Please fill in all required fields';
-                notification.className = 'notification error';
-                notification.style.display = 'block';
-                return;
-            }
-            
-            // Check email format
-            if (!/^\S+@\S+\.\S+$/.test(this.email.value)) {
-                e.preventDefault();
-                notification.textContent = 'Please enter a valid email address';
-                notification.className = 'notification error';
-                notification.style.display = 'block';
-                return;
-            }
-            
-            // Success message will be handled by FormSubmit's redirect
-        });
-        
-        // Check for success parameter in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get('success') === 'true') {
-            const notification = document.getElementById('notification');
-            notification.textContent = 'Message sent successfully!';
-            notification.className = 'notification success';
-            notification.style.display = 'block';
-            
-            // Clear URL parameters
-            window.history.replaceState({}, document.title, window.location.pathname);
-            
-            // Hide notification after 5 seconds
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 5000);
-        }
-        // Загружаем данные пользователя при загрузке страницы
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedData = localStorage.getItem('userData');
-            if (savedData) {
-                const userData = JSON.parse(savedData);
-                document.getElementById('info-name').textContent = userData.name;
-                document.getElementById('info-phone').textContent = userData.phone;
-                document.getElementById('info-flight').textContent = userData.flightNumber;
-            } else {
-                // Если данных нет, перенаправляем на первую страницу
-                window.location.href = 'index.html';
+            try {
+                // Получаем данные пользователя из data-атрибутов формы
+                const userName = form.dataset.userName;
+                const userPhone = form.dataset.userPhone;
+                const userFlight = form.dataset.userFlight;
+                
+                // Создаем параметры для письма
+                const templateParams = {
+                    from_name: userName,
+                    user_name: userName,
+                    user_phone: userPhone,
+                    user_flight: userFlight,
+                    message: form.message.value,
+                    // Специальное поле для темы письма
+                    email_subject: `Message from ${userName} (Phone: ${userPhone}, Flight: ${userFlight})`
+                };
+                
+                // Отправляем письмо
+                const response = await emailjs.send(
+                    'service_els1igx',
+                    'template_yzno5sp',
+                    templateParams
+                );
+                
+                // Успешная отправка
+                messageDiv.textContent = '✓ Message sent successfully!';
+                messageDiv.className = 'success';
+                form.reset();
+                setTimeout(() => {
+                    messageDiv.textContent = '';
+                    messageDiv.className = '';
+                }, 3000);
+            } catch (error) {
+                console.error('Error:', error);
+                messageDiv.textContent = '✗ Error: ' + (error.text || 'Failed to send message');
+                messageDiv.className = 'error';
             }
         });
     </script>
