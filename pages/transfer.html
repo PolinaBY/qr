@@ -166,6 +166,14 @@
             cursor: pointer;
         }
     </style>
+    <!-- Добавляем EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Инициализация EmailJS
+        (function() {
+            emailjs.init("5taBVN-c3p3SoTNfe");
+        })();
+    </script>
 </head>
 <body>
     <header>
@@ -301,59 +309,105 @@
             });
         }
         
-        // Handle form submission
-        document.getElementById('transferForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const notification = document.getElementById('notification');
-            
-            // Validate form
-            if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value) {
-                notification.textContent = 'Please fill in all required fields';
-                notification.className = 'notification error';
-                notification.style.display = 'block';
-                return;
-            }
-            
-            // Collect stops
-            const stops = [];
-            document.querySelectorAll('.stop-input').forEach(input => {
-                if (input.value.trim()) {
-                    stops.push(input.value.trim());
-                }
-            });
-            
-            // Create transfer object
-            const transfer = {
-                from: this.from.value,
-                to: this.to.value,
-                stops: stops,
-                date: this.date.value,
-                time: this.time.value,
-                passengers: this.passengers.value,
-                notes: this.notes.value,
-                id: Date.now() // Unique ID for each transfer
-            };
-            
-            // Save transfer
-            saveTransfer(transfer);
-            
-            // Reset and hide form
-            this.reset();
-            this.style.display = 'none';
-            document.getElementById('addTransferBtn').style.display = 'block';
-            document.getElementById('stopsContainer').innerHTML = '';
-            
-            // Show success message
-            notification.textContent = 'Transfer added successfully!';
-            notification.className = 'notification success';
-            notification.style.display = 'block';
-            
-            // Hide notification after 3 seconds
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        });
+        // Функция для отправки email через EmailJS
+        // Обработчик отправки формы
+document.getElementById('transferForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const notification = document.getElementById('notification');
+    
+    // Валидация формы
+    if (!this.from.value || !this.to.value || !this.date.value || !this.time.value || !this.passengers.value) {
+        notification.textContent = 'Please fill in all required fields';
+        notification.className = 'notification error';
+        notification.style.display = 'block';
+        return;
+    }
+    
+    // Сбор данных об остановках
+    const stops = Array.from(document.querySelectorAll('.stop-input'))
+                       .map(input => input.value.trim())
+                       .filter(stop => stop);
+    
+    // Создание объекта трансфера
+    const transfer = {
+        from: this.from.value,
+        to: this.to.value,
+        stops: stops,
+        date: this.date.value,
+        time: this.time.value,
+        passengers: this.passengers.value,
+        notes: this.notes.value,
+        id: Date.now()
+    };
+    
+    // Получение данных пользователя
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    
+    try {
+        // 1. Сначала сохраняем трансфер
+        saveTransfer(transfer);
+        
+        // 2. Пытаемся отправить письмо
+        const emailResult = await sendTransferEmail(transfer, userData);
+        
+        // Сброс и скрытие формы
+        this.reset();
+        this.style.display = 'none';
+        document.getElementById('addTransferBtn').style.display = 'block';
+        document.getElementById('stopsContainer').innerHTML = '';
+        
+        // Показать уведомление
+        notification.textContent = emailResult 
+            ? 'Transfer added successfully! Email notification sent.' 
+            : 'Transfer saved but email notification failed.';
+        notification.className = `notification ${emailResult ? 'success' : 'error'}`;
+        notification.style.display = 'block';
+        
+    } catch (error) {
+        console.error('Error:', error);
+        notification.textContent = 'Error saving transfer. Please try again.';
+        notification.className = 'notification error';
+        notification.style.display = 'block';
+    }
+    
+    // Скрыть уведомление через 5 секунд
+    setTimeout(() => {
+        notification.style.display = 'none';
+    }, 5000);
+});
+
+// Функция отправки email
+async function sendTransferEmail(transferData, userData) {
+    try {
+        const templateParams = {
+            user_name: userData.name,
+            user_phone: userData.phone,
+            user_flight: userData.flightNumber,
+            transfer_from: transferData.from,
+            transfer_to: transferData.to,
+            transfer_stops: transferData.stops.join(', ') || 'None',
+            transfer_date: transferData.date,
+            transfer_time: transferData.time,
+            transfer_passengers: transferData.passengers,
+            transfer_notes: transferData.notes || 'None',
+            transfer_id: transferData.id
+        };
+        
+        // Убедитесь, что emailjs.init() был вызван ранее с вашим USER_ID
+        const response = await emailjs.send(
+            "service_els1igx", 
+            "template_vb9o72e", 
+            templateParams
+        );
+        
+        console.log('Email sent successfully', response);
+        return true;
+    } catch (error) {
+        console.error('Failed to send email', error);
+        return false;
+    }
+}
         
         // Save transfer to localStorage
         function saveTransfer(transfer) {
@@ -361,6 +415,7 @@
             transfers.push(transfer);
             localStorage.setItem('transfers', JSON.stringify(transfers));
             renderTransfers();
+            return Promise.resolve(true);
         }
         
         // Load transfers from localStorage
