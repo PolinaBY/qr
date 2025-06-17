@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Requested Services</title>
     <link rel="stylesheet" href="../style.css">
+    <!-- Добавляем EmailJS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script>
+        // Инициализация EmailJS
+        (function() {
+            emailjs.init("5taBVN-c3p3SoTNfe");
+        })();
+    </script>
 </head>
 <body>
      <header>
@@ -20,21 +28,7 @@
         <div class="user-info-item"><strong>Phone:</strong> <span id="info-phone"></span></div>
         <div class="user-info-item"><strong>Flight:</strong> <span id="info-flight"></span></div>
     </div>
-
-    <form id="servicesForm" action="https://formsubmit.co/p.pollinkaa2501@email.com" method="POST">
-        <!-- Добавляем скрытые поля для настройки FormSubmit -->
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_subject" value="New Aircraft Services Request">
-        
-        <div class="contact-info">
-            <h2>Your Contact Information</h2>
-            <div class="form-group">
-                <label for="userEmail">Email Address*</label>
-                <input type="email" id="userEmail" name="email" required>
-            </div>
-        </div>
-
+    <form id="servicesForm">
         <div class="services-container">
             <div class="service-section">
                 <h1>REQUESTED SERVICES UPON ARRIVAL</h1>
@@ -247,6 +241,7 @@
                 </div>
             </div>
         </div>
+
         <h1>REQUESTED SERVICES FOR DEPARTURE</h1>
         <!-- Service 1 -->
         <div class="service-item">
@@ -460,15 +455,24 @@
                 </div>
             </div>
         </div>
-    </div>
-        <button type="submit" class="submit-btn">SUBMIT ORDER</button>
     </form>
-
-    <div class="notification" id="notification">Order submitted successfully! You will receive a confirmation email shortly.</div>
+    <button type="submit" class="submit-btn">SUBMIT ORDER</button>
+    <div class="notification" id="notification"></div>
 
     <script src="../script.js"></script>
 
    <script>
+     document.querySelectorAll('.service-header').forEach(header => {
+    if (header) {
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const plusIcon = this.querySelector('.plus-icon');
+            
+            if (content) content.classList.toggle('active');
+            if (plusIcon) plusIcon.classList.toggle('rotated');
+        });
+    }
+    });
     // Универсальная функция для настройки сервисов
     function setupService(checkboxId) {
         const checkbox = document.getElementById(checkboxId);
@@ -555,32 +559,147 @@
 
         // Обработка формы
         document.getElementById('servicesForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
+        e.preventDefault();
+        const notification = document.getElementById('notification');
+        
+        // Собираем данные пользователя
+        const userData = JSON.parse(localStorage.getItem('userData')) || {};
+        
+        // Собираем данные формы только для выбранных сервисов
+        const formData = {
+            user: {
+                name: userData.name || 'Not provided',
+                phone: userData.phone || 'Not provided',
+                flight: userData.flightNumber || 'Not provided'
+            },
+            arrivalServices: {},
+            departureServices: {}
+        };
+
+        // Функция для сбора данных сервиса
+       function collectServiceData(prefix, serviceName) {
+    const checkbox = document.getElementById(`${prefix}-${serviceName}-checkbox`);
+    if (checkbox && checkbox.checked) {
+        const serviceData = {};
+        const serviceItem = checkbox.closest('.service-item');
+        
+        if (!serviceItem) return null;
+        
+        // Собираем текстовые поля и textarea
+        const inputs = serviceItem.querySelectorAll('input[type="text"], input[type="number"], textarea');
+        inputs.forEach(input => {
+            if (input.value) {
+                serviceData[input.name || input.id] = input.value;
+            }
+        });
+        
+        // Собираем чекбоксы (только отмеченные)
+        const checkboxes = serviceItem.querySelectorAll('input[type="checkbox"]:checked');
+        checkboxes.forEach(checkbox => {
+            serviceData[checkbox.name || checkbox.id] = true;
+        });
+        
+        // Собираем информацию о файлах
+        const fileInput = serviceItem.querySelector('input[type="file"]');
+        if (fileInput && fileInput.files.length > 0) {
+            serviceData.files = Array.from(fileInput.files).map(file => file.name).join(', ');
+        }
+        
+        return serviceData;
+    }
+    return null;
+}
+
+        // Собираем сервисы прибытия
+        const arrivalServices = [
+            'fuel', 'water', 'lavatory', 'catering', 
+            'garbage', 'documents', 'storage', 
+            'gpu', 'acu', 'stepladder', 'other'
+        ];
+        
+        arrivalServices.forEach(service => {
+            const data = collectServiceData('arrival', service);
+            if (data) formData.arrivalServices[service] = data;
+        });
+
+        // Собираем сервисы отправления
+        const departureServices = [
+            'fuel', 'water', 'lavatory', 'catering', 
+            'garbage', 'documents', 'storage', 
+            'gpu', 'acu', 'stepladder', 'other'
+        ];
+        
+        departureServices.forEach(service => {
+            const data = collectServiceData('departure', service);
+            if (data) formData.departureServices[service] = data;
+        });
+
+        // Формируем содержимое письма
+        let emailContent = `
+            <h2>New Services Request</h2>
+            <h3>User Information</h3>
+            <p><strong>Name:</strong> ${formData.user.name}</p>
+            <p><strong>Phone:</strong> ${formData.user.phone}</p>
+            <p><strong>Tail Number:</strong> ${formData.user.flight}</p>
+        `;
+
+        // Добавляем сервисы прибытия
+        if (Object.keys(formData.arrivalServices).length > 0) {
+            emailContent += `<h3>Arrival Services</h3>`;
+            for (const [service, data] of Object.entries(formData.arrivalServices)) {
+                emailContent += `<h4>${service.toUpperCase()}</h4><ul>`;
+                for (const [key, value] of Object.entries(data)) {
+                    emailContent += `<li><strong>${key}:</strong> ${value}</li>`;
                 }
-            })
-            .then(response => {
-                if (response.ok) {
-                    document.getElementById('notification').style.display = 'block';
-                    this.reset();
-                    setTimeout(() => {
-                        document.getElementById('notification').style.display = 'none';
-                    }, 5000);
-                } else {
-                    throw new Error('Form submission failed');
+                emailContent += `</ul>`;
+            }
+        }
+
+        // Добавляем сервисы отправления
+        if (Object.keys(formData.departureServices).length > 0) {
+            emailContent += `<h3>Departure Services</h3>`;
+            for (const [service, data] of Object.entries(formData.departureServices)) {
+                emailContent += `<h4>${service.toUpperCase()}</h4><ul>`;
+                for (const [key, value] of Object.entries(data)) {
+                    emailContent += `<li><strong>${key}:</strong> ${value}</li>`;
                 }
+                emailContent += `</ul>`;
+            }
+        }
+
+        // Параметры для EmailJS
+        const templateParams = {
+            user_name: formData.user.name,
+            user_phone: formData.user.phone,
+            user_flight: formData.user.flight,
+            email_subject: `New Services Request from ${formData.user.name} (Flight: ${formData.user.flight})`,
+            email_content: emailContent
+        };
+
+        // Отправка через EmailJS
+        emailjs.send('service_els1igx', 'template_yzno5sp', templateParams)
+            .then(() => {
+                notification.textContent = 'Order submitted successfully! Email sent.';
+                notification.className = 'notification success';
+                notification.style.display = 'block';
+                
+                // Очистка формы
+                this.reset();
+                document.querySelectorAll('.service-content').forEach(el => {
+                    el.style.display = 'none';
+                });
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Error submitting form. Please try again.');
+                console.error('Email sending failed:', error);
+                notification.textContent = 'Order submitted but email failed. Please contact support.';
+                notification.className = 'notification error';
+                notification.style.display = 'block';
             });
-        });
+    });
 
         // Загрузка данных пользователя
         const savedData = localStorage.getItem('userData');
